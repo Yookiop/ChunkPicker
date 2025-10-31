@@ -9,6 +9,11 @@ function get() {
     if (request.length > 1)
         potential = stringToChunkIndexes(request[1]);
 
+    // Clear existing boss data
+    if (typeof clearAllBossData === 'function') {
+        clearAllBossData();
+    }
+
     // Add every unpacked chunk into the unlocked chunks list
     for (var i = 0; i < chunks.length; i++) {
         addChunkAsUnlocked(chunks[i]);
@@ -17,6 +22,16 @@ function get() {
     // add every potential chunk into the potential chunks list
     for (var i = 0; i < potential.length; i++) {
         addChunkAsPotential(potential[i]);
+    }
+
+    // Load boss data if present (3rd parameter)
+    if (request.length > 2 && request[2] && typeof importBossMarkers === 'function') {
+        try {
+            var bossData = JSON.parse(decodeURIComponent(request[2]));
+            importBossMarkers(bossData);
+        } catch (e) {
+            console.warn("Could not parse boss data from URL:", e);
+        }
     }
 }
 
@@ -32,6 +47,15 @@ function encodeGet() {
     dummy.value = document.location.href.split('?')[0];
     // insert query for unlocked chunks
     dummy.value += '?' + unlocked + ';' + potential;
+    
+    // Add boss data if available
+    if (typeof exportBossMarkers === 'function') {
+        var bossData = exportBossMarkers();
+        if (bossData && bossData.bossMarkers && bossData.bossMarkers.length > 0) {
+            dummy.value += ';' + encodeURIComponent(JSON.stringify(bossData));
+        }
+    }
+    
     dummy.select();
     document.execCommand("copy");
     document.body.removeChild(dummy);

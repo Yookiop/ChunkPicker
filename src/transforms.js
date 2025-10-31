@@ -21,6 +21,11 @@ $(document).ready(function() {
 		repositionMapOnPoint(imageDiv, lumbyX, lumbyY);
 	}
 
+	// Render any boss markers that were loaded
+	if (typeof renderAllBossMarkers === 'function') {
+		setTimeout(renderAllBossMarkers, 100); // Small delay to ensure chunks are rendered first
+	}
+
 	// Allow dragging the map, and set a flag when dragging
 	$("#imgDiv").draggable({
 		drag: function (event, ui) {

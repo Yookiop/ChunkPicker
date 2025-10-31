@@ -1,8 +1,8 @@
 // Randomly roll one of the potential (numbered) chunks
 function pickPotentialChunk() {
-    // Get checkbox values
-    var removePotential = document.getElementById("removePotential").checked;
-    var selectNewNeighbors = document.getElementById("selectNewNeighbors").checked;
+    // Always mark new neighbors as potential (default behavior)
+    var selectNewNeighbors = true;
+    var removePotential = false; // Never remove potential chunks
 	var chunks = document.getElementsByClassName("potential");
 	if (chunks.length == 0) return;
 
@@ -14,7 +14,7 @@ function pickPotentialChunk() {
 	for (var i = chunks.length - 1; i >= 0; i--) {
 		if (i == randomIndex) {
             var chunk = chunks[i];
-            // Set new neighbors as potential
+            // Set new neighbors as potential (always enabled)
             if (selectNewNeighbors && !removePotential) {
                 addPotentialNeighborsForID(chunks[randomIndex].id);
             }
@@ -27,14 +27,11 @@ function pickPotentialChunk() {
 				//chunk.innerText = savedText;
             }, 1000);
 		}
-		else if (removePotential) {
-            addChunkAsLocked(chunks[i].id);
-        }
+		// Remove the else clause that handled removePotential
     }
     
-    if (!removePotential) {
-        updatePotentialNumbers();
-    }
+    // Always update potential numbers since we never remove potential chunks
+    updatePotentialNumbers();
 }
 
 // Move the map to the center point between all unlocked tiles
@@ -52,22 +49,6 @@ function centerOnUnlockedTiles() {
     repositionMapOnPoint(document.getElementById("imgDiv"), centerPoint[0], centerPoint[1]);
 
     fixMapEdges(document.getElementById("imgDiv"));
-}
-
-// Disable the other checkbox when one is active
-function disableOtherCheckbox(box) {
-    if (box.id == "selectNewNeighbors" && box.checked) {
-        document.getElementById("removePotential").disabled = true;
-    }
-    else if (box.id == "selectNewNeighbors" && !box.checked) {
-        document.getElementById("removePotential").disabled = false;
-    }
-    else if (box.id == "removePotential" && box.checked) {
-        document.getElementById("selectNewNeighbors").disabled = true;
-    }
-    else if (box.id == "removePotential" && !box.checked) {
-        document.getElementById("selectNewNeighbors").disabled = false;
-    }
 }
 
 // Return the X- and Y-values of a given chunk's center point

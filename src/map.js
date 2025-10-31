@@ -26,6 +26,11 @@ function toggleChunkButton(id) {
 		dragging = false;
 	}
 	else {
+		// Check if we're in boss mode first
+		if (typeof handleBossPlacement === 'function' && handleBossPlacement(id)) {
+			return; // Boss placement handled the click
+		}
+		
 		var btn = document.getElementById(id);
 		if (btn.className == "locked") {
 			addChunkAsPotential(id);
@@ -51,6 +56,14 @@ function addChunkAsPotential(id) {
 	removeUnlockedTileNumbers();
 	updatePotentialNumbers();
 	btn.className = "potential";
+	
+	// Re-render boss marker if it exists for this chunk
+	if (typeof getBossMarker === 'function') {
+		var boss = getBossMarker(id);
+		if (boss) {
+			setTimeout(() => renderBossMarker(boss), 50);
+		}
+	}
 }
 
 function addChunkAsUnlocked(id) {
@@ -66,6 +79,14 @@ function addChunkAsUnlocked(id) {
 
 	updatePotentialNumbers();
 	drawUnlockedBorders();
+	
+	// Re-render boss marker if it exists for this chunk
+	if (typeof getBossMarker === 'function') {
+		var boss = getBossMarker(id);
+		if (boss) {
+			setTimeout(() => renderBossMarker(boss), 50);
+		}
+	}
 }
 
 function addChunkAsLocked(id) {

@@ -1,7 +1,13 @@
 // Combine the two arrays of chunk IDs into one text file
 function chunksToJSON() {
-    // Combine the arrays as strings to keep them separate
-    var packedString = JSON.stringify(JSON.stringify(unlockedChunks) + JSON.stringify(potentialChunks));
+    // Create data object with chunks and boss markers
+    var saveData = {
+        unlockedChunks: unlockedChunks,
+        potentialChunks: potentialChunks,
+        bossData: typeof exportBossMarkers === 'function' ? exportBossMarkers() : null
+    };
+    
+    var packedString = JSON.stringify(saveData);
     var packedURI = 'data:text/json;charset=utf-8,' + encodeURIComponent(packedString);
 
     var downloadAnchor = document.createElement("a"); // Create a temporary element
@@ -23,30 +29,63 @@ function JSONToChunks() {
     reader.readAsText(jsonFile.item(0));
 
     reader.onload = function(e) {
-        var result = JSON.parse(e.target.result);
-        var split = result.slice(1, -1).split("][");
-
-        // Reset all tiles to "locked"
-        var chunks = document.getElementById("btnDiv").children;
-        for (var i = 0; i < chunks.length; i++) {
-            addChunkAsLocked(i);
-        }
-
-        // Add parsed unlocked chunks
-        var unlocked = split[0].split(",");
-        for (var i = 0; i < unlocked.length; i++) {
-            // Check if the array is empty from the JSON parsing
-            if (unlocked[i] != "") {
-                addChunkAsUnlocked(unlocked[i]);
+        try {
+            var result = JSON.parse(e.target.result);
+            
+            // Reset all tiles to "locked"
+            var chunks = document.getElementById("btnDiv").children;
+            for (var i = 0; i < chunks.length; i++) {
+                addChunkAsLocked(i);
             }
-        }
-
-        var potential = split[1].split(",");
-        for (var i = 0; i < potential.length; i++) {
-            // Check if the array is empty from the JSON parsing
-            if (potential[i] != "") {
-                addChunkAsPotential(potential[i]);
+            
+            // Clear all boss markers
+            if (typeof clearAllBossData === 'function') {
+                clearAllBossData();
             }
+            
+            // Check if this is new format (object) or old format (string)
+            if (typeof result === 'object' && result.unlockedChunks !== undefined) {
+                // New format with boss data support
+                var unlocked = result.unlockedChunks || [];
+                var potential = result.potentialChunks || [];
+                
+                // Add parsed unlocked chunks
+                for (var i = 0; i < unlocked.length; i++) {
+                    addChunkAsUnlocked(unlocked[i]);
+                }
+                
+                // Add parsed potential chunks
+                for (var i = 0; i < potential.length; i++) {
+                    addChunkAsPotential(potential[i]);
+                }
+                
+                // Import boss data if available
+                if (result.bossData && typeof importBossMarkers === 'function') {
+                    importBossMarkers(result.bossData);
+                }
+            } else {
+                // Old format - handle legacy saves
+                var split = result.slice(1, -1).split("][");
+                
+                // Add parsed unlocked chunks
+                var unlocked = split[0].split(",");
+                for (var i = 0; i < unlocked.length; i++) {
+                    // Check if the array is empty from the JSON parsing
+                    if (unlocked[i] != "") {
+                        addChunkAsUnlocked(unlocked[i]);
+                    }
+                }
+
+                var potential = split[1].split(",");
+                for (var i = 0; i < potential.length; i++) {
+                    // Check if the array is empty from the JSON parsing
+                    if (potential[i] != "") {
+                        addChunkAsPotential(potential[i]);
+                    }
+                }
+            }
+        } catch (error) {
+            alert("Error loading save file: " + error.message);
         }
     }
 

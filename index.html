@@ -8,6 +8,7 @@
 		<script src="src/buttons.js"></script>
 		<script src="src/importExport.js"></script>
 		<script src="src/requests.js"></script>
+		<script src="src/bosses.js"></script>
 		<link rel="stylesheet" href="styles.css">
 	</head>
 
@@ -33,26 +34,25 @@
 
 			<div class="sidebarLeft" id="sidebarLeft">
 				<div class="controls" id="controls">
-					<h2 style="margin: 0px">OSRS Chunk Picker</h2>
+					<h2 style="margin: 0px">OSRS Boss Chunker</h2>
 					<button class="picker" onclick="pickPotentialChunk()">Pick a random potential chunk!</button>
 					<button class="picker" onclick="centerOnUnlockedTiles()">Center on unlocked tiles</button>
-					<div style="margin: 10px; line-height: 20px">
-						<label class="checkLabel">
-							<input type="checkbox" id="selectNewNeighbors" onclick="disableOtherCheckbox(this)">
-							Mark new neighbors as potential after rolling.
-						</label></br>
-						<label class="checkLabel">
-							<input type="checkbox" id="removePotential" onclick="disableOtherCheckbox(this)">
-							Remove potential chunks after rolling.
-						</label>
-					</div>
 				</div>
-				<div class="importExport" id="importExport">
-					<h2 style="margin: 0px">Import/Export</h2>
-					<button class="picker" id="importButton" onclick="document.getElementById('select').click()">Import</button>
-					<input type="file" id="select" style="display:none" onchange="JSONToChunks()" accept="text/plain">
-					<button class="picker" id="exportButton" onclick="chunksToJSON()">Export</button>
-					<button class="picker" id="urlButton" onclick="encodeGet()">Generate and copy URL</button>
+				<div class="bossControls" id="bossControls">
+					<h2 style="margin: 0px">Boss Markers</h2>
+					<button class="picker" id="bossToggleButton" onclick="toggleBossMode()">Boss Placement Mode</button>
+					<div style="margin: 10px;">
+						<label for="bossTypeSelect">Boss Type:</label>
+						<select id="bossTypeSelect" onchange="setSelectedBossType(this.value)" style="width: 100%; margin-top: 5px; padding: 5px;">
+							<option value="torag">Torag the Corrupted</option>
+							<option value="scurrius">Scurrius</option>
+							<option value="gemstone_crab">Gemstone Crab</option>
+						</select>
+					</div>
+					<div id="bossInstructions" style="margin: 10px; line-height: 20px; color: #ff6b6b; display: none;">
+						Click on a chunk to place boss marker
+					</div>
+					<button class="picker" onclick="clearAllBossData()" style="background-color: #ff6b6b; margin-top: 10px;">Clear All Boss Markers</button>
 				</div>
 			</div>
 			<div class="arrowLeftBackground" id="arrowLeftBackground">
@@ -68,7 +68,8 @@
 				</div>
 				<div class="aboutBox" id="aboutBox">
 					<h2 style="margin: 0px">About</h2>
-					<p style="margin: 0px 0px 20px 0px; line-height: 20px">Made by: Amehzyn</p>
+					<p style="margin: 0px 0px 20px 0px; line-height: 20px">OSRS Boss Chunker - Modified by Yookiop</p>
+					<p style="margin: 0px 0px 20px 0px; line-height: 20px">Original by: Amehzyn</p>
 					<a href="https://discord.gg/8vQu9xU" title="Pookaguy's ChunkManMode Discord">
 						<img src="images/Discord-Logo-Color.png" style="width:25%"></a>
 					<a href="https://github.com/GitGeddes/ChunkPicker" title="Source Code">

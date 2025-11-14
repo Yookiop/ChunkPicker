@@ -9,29 +9,156 @@ function pickPotentialChunk() {
     removeUnlockedTileNumbers();
     removeBetweenTileNumbers();
 
-	// Randomly pick one of the numbered tiles
-    var randomIndex = Math.floor(Math.random() * chunks.length);
-	for (var i = chunks.length - 1; i >= 0; i--) {
-		if (i == randomIndex) {
-            var chunk = chunks[i];
-            // Set new neighbors as potential (always enabled)
-            if (selectNewNeighbors && !removePotential) {
-                addPotentialNeighborsForID(chunks[randomIndex].id);
-            }
-            chunk.className = "between";
-            removeElementFromArray(potentialChunks, Number(chunk.id));
-			// Wait 1 second for "between" animation to finish
-			setTimeout(() => {
-				//var savedText = chunk.innerText;
-				addChunkAsUnlocked(chunk.id);
-				//chunk.innerText = savedText;
-            }, 1000);
-		}
-		// Remove the else clause that handled removePotential
+    // Start the awesome animation sequence!
+    startPickChunkAnimation(chunks, selectNewNeighbors, removePotential);
+}
+
+// Cool animation sequence for picking a random chunk
+function startPickChunkAnimation(chunks, selectNewNeighbors, removePotential) {
+    // Get the button and add spinning animation
+    var button = document.querySelector('button[onclick="pickPotentialChunk()"]');
+    button.classList.add('spinning');
+    button.disabled = true;
+    button.textContent = 'Rolling...';
+
+    // Make all potential chunks pulse
+    for (var i = 0; i < chunks.length; i++) {
+        chunks[i].classList.add('pulsing');
+    }
+
+    // Create confetti
+    createConfetti();
+
+    // After 2 seconds, stop button animation and pick the chunk
+    setTimeout(() => {
+        button.classList.remove('spinning');
+        button.disabled = false;
+        button.textContent = 'Pick a random potential chunk!';
+
+        // Stop pulsing on all chunks
+        for (var i = 0; i < chunks.length; i++) {
+            chunks[i].classList.remove('pulsing');
+        }
+
+        // Randomly pick one of the numbered tiles
+        var randomIndex = Math.floor(Math.random() * chunks.length);
+        var selectedChunk = chunks[randomIndex];
+
+        // Add highlight animation to selected chunk
+        selectedChunk.classList.add('chunk-highlight');
+
+        // Set new neighbors as potential (always enabled)
+        if (selectNewNeighbors && !removePotential) {
+            addPotentialNeighborsForID(selectedChunk.id);
+        }
+        selectedChunk.className = "between chunk-highlight";
+        removeElementFromArray(potentialChunks, Number(selectedChunk.id));
+
+        // Wait 1 second for "between" animation to finish
+        setTimeout(() => {
+            addChunkAsUnlocked(selectedChunk.id);
+            
+            // Automatically center and zoom on the selected chunk
+            var chunkPoint = getChunkCenterPoint(selectedChunk.id);
+            var imgDiv = document.getElementById("imgDiv");
+            zoomToPoint(imgDiv, chunkPoint[0], chunkPoint[1], 2.5);
+            fixMapEdges(imgDiv);
+            
+            // Remove highlight class after unlocking
+            setTimeout(() => {
+                var unlockedChunk = document.getElementById(selectedChunk.id);
+                if (unlockedChunk) {
+                    unlockedChunk.classList.remove('chunk-highlight');
+                }
+            }, 500);
+        }, 1000);
+
+        // Always update potential numbers since we never remove potential chunks
+        updatePotentialNumbers();
+    }, 2000);
+}
+
+// Info mode variables
+var infoMode = false;
+
+// Toggle info mode
+function toggleInfoMode() {
+    var button = document.getElementById('infoButton');
+    var instructions = document.getElementById('infoInstructions');
+    
+    if (infoMode) {
+        infoMode = false;
+        button.textContent = 'Chunk Info Mode';
+        button.style.backgroundColor = 'rgb(52, 152, 219)';
+        instructions.style.display = 'none';
+    } else {
+        infoMode = true;
+        button.textContent = 'Exit Info Mode';
+        button.style.backgroundColor = '#4ecdc4';
+        instructions.style.display = 'block';
+    }
+}
+
+// Show chunk info
+function showChunkInfo(id) {
+    var chunk = document.getElementById(id);
+    var rect = chunk.getBoundingClientRect();
+    
+    // Remove any existing info displays
+    var existingInfo = document.querySelector('.chunk-info-display');
+    if (existingInfo) {
+        existingInfo.remove();
     }
     
-    // Always update potential numbers since we never remove potential chunks
-    updatePotentialNumbers();
+    // Create info display
+    var infoDisplay = document.createElement('div');
+    infoDisplay.className = 'chunk-info-display';
+    infoDisplay.textContent = `Chunk ID: ${id}`;
+    infoDisplay.style.position = 'fixed';
+    infoDisplay.style.left = rect.left + rect.width / 2 + 'px';
+    infoDisplay.style.top = rect.top - 40 + 'px';
+    infoDisplay.style.transform = 'translateX(-50%)';
+    infoDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    infoDisplay.style.color = '#4ecdc4';
+    infoDisplay.style.padding = '8px 12px';
+    infoDisplay.style.borderRadius = '5px';
+    infoDisplay.style.fontSize = '14px';
+    infoDisplay.style.zIndex = '10000';
+    infoDisplay.style.pointerEvents = 'none';
+    infoDisplay.style.border = '1px solid #4ecdc4';
+    
+    document.body.appendChild(infoDisplay);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        if (infoDisplay.parentNode) {
+            infoDisplay.parentNode.removeChild(infoDisplay);
+        }
+    }, 3000);
+}
+
+// Create confetti animation
+function createConfetti() {
+    var colors = ['confetti-1', 'confetti-2', 'confetti-3', 'confetti-4', 'confetti-5'];
+    var button = document.querySelector('button[onclick="pickPotentialChunk()"]');
+    var buttonRect = button.getBoundingClientRect();
+    
+    for (var i = 0; i < 50; i++) {
+        setTimeout(function() {
+            var confetti = document.createElement('div');
+            confetti.className = 'confetti ' + colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = (buttonRect.left + Math.random() * buttonRect.width) + 'px';
+            confetti.style.top = buttonRect.top + 'px';
+            document.body.appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.parentNode.removeChild(confetti);
+                }
+            }, 3500);
+        }, Math.random() * 500);
+    }
 }
 
 // Move the map to the center point between all unlocked tiles

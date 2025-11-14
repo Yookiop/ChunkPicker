@@ -26,7 +26,13 @@ function toggleChunkButton(id) {
 		dragging = false;
 	}
 	else {
-		// Check if we're in boss mode first
+		// Check if we're in info mode first
+		if (typeof infoMode !== 'undefined' && infoMode) {
+			showChunkInfo(id);
+			return; // Info mode handled the click
+		}
+		
+		// Check if we're in boss mode
 		if (typeof handleBossPlacement === 'function' && handleBossPlacement(id)) {
 			return; // Boss placement handled the click
 		}

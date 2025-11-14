@@ -238,6 +238,109 @@ button.picker:focus {
 	/* After clicking, don't show blue border */
 	outline: 0;
 }
+
+/* Pick Random Chunk Animation Styles */
+.picker.spinning {
+	animation: spinButton 2s ease-in-out;
+	background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd);
+	background-size: 400% 400%;
+	animation: spinButton 2s ease-in-out, gradientShift 2s ease-in-out;
+}
+
+@keyframes spinButton {
+	0% { transform: rotate(0deg) scale(1); }
+	25% { transform: rotate(90deg) scale(1.1); }
+	50% { transform: rotate(180deg) scale(1.2); }
+	75% { transform: rotate(270deg) scale(1.1); }
+	100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes gradientShift {
+	0% { background-position: 0% 50%; }
+	50% { background-position: 100% 50%; }
+	100% { background-position: 0% 50%; }
+}
+
+.chunk-highlight {
+	animation: chunkGlow 3s ease-in-out;
+	box-shadow: 0 0 20px #ff6b6b, 0 0 40px #ff6b6b, 0 0 80px #ff6b6b;
+	z-index: 999;
+}
+
+@keyframes chunkGlow {
+	0% { 
+		box-shadow: 0 0 5px #ff6b6b;
+		transform: scale(1);
+	}
+	50% { 
+		box-shadow: 0 0 30px #ff6b6b, 0 0 60px #ff6b6b, 0 0 90px #ff6b6b;
+		transform: scale(1.1);
+	}
+	100% { 
+		box-shadow: 0 0 5px #ff6b6b;
+		transform: scale(1);
+	}
+}
+
+.confetti {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	pointer-events: none;
+	z-index: 1000;
+}
+
+.confetti-1 { background: #ff6b6b; animation: confettiFall 3s ease-out forwards; }
+.confetti-2 { background: #4ecdc4; animation: confettiFall 3.2s ease-out forwards; }
+.confetti-3 { background: #45b7d1; animation: confettiFall 2.8s ease-out forwards; }
+.confetti-4 { background: #96ceb4; animation: confettiFall 3.5s ease-out forwards; }
+.confetti-5 { background: #ffeaa7; animation: confettiFall 2.5s ease-out forwards; }
+
+@keyframes confettiFall {
+	0% {
+		transform: translateY(-100vh) rotate(0deg);
+		opacity: 1;
+	}
+	100% {
+		transform: translateY(100vh) rotate(360deg);
+		opacity: 0;
+	}
+}
+
+.potential.pulsing {
+	animation: chunkPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes chunkPulse {
+	0% { background-color: rgba(12, 184, 46, 0.4); transform: scale(1); }
+	50% { background-color: rgba(52, 152, 219, 0.7); transform: scale(1.05); }
+	100% { background-color: rgba(12, 184, 46, 0.4); transform: scale(1); }
+}
+
+/* Chunk info display styling */
+.chunk-info-display {
+	animation: infoFadeIn 0.3s ease-out;
+}
+
+@keyframes infoFadeIn {
+	0% {
+		opacity: 0;
+		transform: translateX(-50%) translateY(10px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(-50%) translateY(0);
+	}
+}
+
+/* Zoom transition for smooth zooming */
+.imgDiv {
+	position: absolute;
+	overflow: hidden;
+	width: 4128px;
+	transition: transform 0.8s ease-in-out;
+}
 .checkLabel {
 	cursor: pointer;
 }

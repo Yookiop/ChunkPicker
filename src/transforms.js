@@ -31,6 +31,16 @@ $(document).ready(function() {
 		setTimeout(renderAllDifficultyMarkers, 100); // Small delay to ensure chunks are rendered first
 	}
 
+	// Automatically place bosses and difficulty markers that have configured chunks
+	setTimeout(() => {
+		if (typeof placeConfiguredBosses === 'function') {
+			placeConfiguredBosses();
+		}
+		if (typeof placeConfiguredDifficultyMarkers === 'function') {
+			placeConfiguredDifficultyMarkers();
+		}
+	}, 150); // Small delay to ensure all systems are initialized
+
 	// Allow dragging the map, and set a flag when dragging
 	$("#imgDiv").draggable({
 		drag: function (event, ui) {
@@ -119,6 +129,16 @@ $(document).ready(function() {
 function repositionMapOnPoint(imageDiv, x, y) {
 	imageDiv.style.left = Math.round(-x + window.innerWidth / 2) + "px";
 	imageDiv.style.top = Math.round(-y + window.innerHeight / 2) + "px";
+}
+
+// Zoom into a specific point on the map
+function zoomToPoint(imageDiv, x, y, zoomLevel = 2) {
+	// Apply zoom transform
+	imageDiv.style.transform = `scale(${zoomLevel})`;
+	imageDiv.style.transformOrigin = `${x}px ${y}px`;
+	
+	// Reposition to keep the point centered
+	repositionMapOnPoint(imageDiv, x * zoomLevel, y * zoomLevel);
 }
 
 // If map has gone outside of boundaires, move it back inside

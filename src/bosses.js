@@ -13,12 +13,14 @@ var bossTypes = {
     "torag": {
         name: "Torag the Corrupted",
         image: "images/73px-Torag_the_Corrupted.png",
-        size: 45
+        size: 45,
+        chunk: 553
     },
     "scurrius": {
         name: "Scurrius",
         image: "images/145px-Scurrius.png",
-        size: 45
+        size: 45,
+        chunk: 419
     },
     "gemstone_crab": {
         name: "Gemstone Crab",
@@ -31,13 +33,15 @@ var bossTypes = {
 var difficultyTypes = {
     "insane": {
         name: "Insane",
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23ffffff'%3E%3Cellipse cx='50' cy='32' rx='22' ry='20'/%3E%3Cpath d='M35 48 Q50 60 65 48 L62 58 Q50 60 38 58 Z'/%3E%3Ccircle cx='42' cy='30' r='4' fill='%23000000'/%3E%3Ccircle cx='58' cy='30' r='4' fill='%23000000'/%3E%3Cpath d='M47 38 L53 38 L50 43 Z' fill='%23000000'/%3E%3Crect x='44' y='54' width='2' height='6'/%3E%3Crect x='47' y='54' width='2' height='8'/%3E%3Crect x='50' y='54' width='2' height='8'/%3E%3Crect x='53' y='54' width='2' height='6'/%3E%3C/g%3E%3C/svg%3E",
-        size: 40
+        image: "images/witte skull.png",
+        size: 40,
+        chunks: []
     },
     "death": {
         name: "Death",
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23ff0000'%3E%3Cellipse cx='50' cy='32' rx='22' ry='20'/%3E%3Cpath d='M35 48 Q50 60 65 48 L62 58 Q50 60 38 58 Z'/%3E%3Ccircle cx='42' cy='30' r='4' fill='%23000000'/%3E%3Ccircle cx='58' cy='30' r='4' fill='%23000000'/%3E%3Cpath d='M47 38 L53 38 L50 43 Z' fill='%23000000'/%3E%3Crect x='44' y='54' width='2' height='6'/%3E%3Crect x='47' y='54' width='2' height='8'/%3E%3Crect x='50' y='54' width='2' height='8'/%3E%3Crect x='53' y='54' width='2' height='6'/%3E%3C/g%3E%3C/svg%3E",
-        size: 40
+        image: "images/rode skull.png",
+        size: 40,
+        chunks: [628]
     }
 };
 
@@ -320,4 +324,53 @@ function confirmClearAllDifficultyData() {
 function clearAllDifficultyData() {
     difficultyMarkers = [];
     clearAllDifficultyMarkers();
+}
+
+// Automatically place bosses that have a configured chunk
+function placeConfiguredBosses() {
+    for (var bossType in bossTypes) {
+        var boss = bossTypes[bossType];
+        if (boss.chunk !== undefined) {
+            // Only place if there isn't already a boss marker on this chunk
+            if (!hasBossMarker(boss.chunk)) {
+                addBossMarker(boss.chunk, bossType);
+            }
+        }
+    }
+}
+
+// Automatically place difficulty markers that have configured chunks
+function placeConfiguredDifficultyMarkers() {
+    for (var difficultyType in difficultyTypes) {
+        var difficulty = difficultyTypes[difficultyType];
+        if (difficulty.chunks !== undefined && difficulty.chunks.length > 0) {
+            for (var i = 0; i < difficulty.chunks.length; i++) {
+                var chunkId = difficulty.chunks[i];
+                // Only place if there isn't already a difficulty marker on this chunk
+                if (!hasDifficultyMarker(chunkId)) {
+                    addConfiguredDifficultyMarker(chunkId, difficultyType);
+                }
+            }
+        }
+    }
+}
+
+// Check if chunk has difficulty marker
+function hasDifficultyMarker(chunkId) {
+    return difficultyMarkers.some(marker => marker.id === chunkId);
+}
+
+// Add difficulty marker without requiring difficulty mode to be active
+function addConfiguredDifficultyMarker(chunkId, difficultyType) {
+    // Remove existing difficulty marker from this chunk
+    removeDifficultyMarker(chunkId);
+    
+    // Add new difficulty marker
+    var marker = {
+        id: chunkId,
+        type: difficultyType
+    };
+    
+    difficultyMarkers.push(marker);
+    renderDifficultyMarker(marker);
 }

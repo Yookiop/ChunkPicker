@@ -105,8 +105,8 @@ div.potential:hover {
 	border: none;
 	box-shadow: none;
 	transition: all 0.2s ease;
-	width: 60px !important;
-	height: 60px !important;
+	width: var(--boss-marker-size, 45px) !important;
+	height: var(--boss-marker-size, 45px) !important;
 }
 
 .boss-marker:hover {
@@ -118,8 +118,8 @@ div.potential:hover {
 	border: none;
 	box-shadow: none;
 	transition: all 0.2s ease;
-	width: 30px !important;
-	height: 30px !important;
+	width: var(--difficulty-marker-size, 30px) !important;
+	height: var(--difficulty-marker-size, 30px) !important;
 }
 
 .difficulty-marker:hover {

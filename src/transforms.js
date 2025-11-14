@@ -39,6 +39,8 @@ $(document).ready(function() {
 		if (typeof placeConfiguredDifficultyMarkers === 'function') {
 			placeConfiguredDifficultyMarkers();
 		}
+		// Initialize marker sizes based on current zoom level
+		resizeMarkers(0);
 	}, 150); // Small delay to ensure all systems are initialized
 
 	// Allow dragging the map, and set a flag when dragging
@@ -105,6 +107,8 @@ $(document).ready(function() {
 		fixMapEdges(imageDiv);
 		// Resize the font-size of potential chunks to fit inside resized chunks
 		resizePotentialFont(dir);
+		// Resize boss and difficulty markers to match zoom level
+		resizeMarkers(dir);
 	});
 
 	// Zoom on the mouse location
@@ -191,4 +195,23 @@ function resizePotentialFont(dir) {
 	for (var i = 0; i < allChunks.length; i++) {
 		allChunks[i].style.fontSize = newFontSize + "pt";
 	}
+}
+
+// As the map zooms, also zoom the marker sizes
+function resizeMarkers(dir) {
+	var imageDiv = document.getElementById("imgDiv");
+	var initialMapWidth = 4128; // Initial width of the map
+	var currentMapWidth = imageDiv.offsetWidth;
+	var scaleFactor = currentMapWidth / initialMapWidth;
+	
+	// Calculate new marker sizes based on scale factor
+	var baseBossSize = 45; // Base size for boss markers
+	var baseDifficultySize = 30; // Base size for difficulty markers
+	
+	var newBossSize = Math.max(20, Math.min(80, baseBossSize * scaleFactor)); // Min 20px, max 80px
+	var newDifficultySize = Math.max(15, Math.min(60, baseDifficultySize * scaleFactor)); // Min 15px, max 60px
+	
+	// Update CSS custom properties for marker sizes
+	document.documentElement.style.setProperty('--boss-marker-size', newBossSize + 'px');
+	document.documentElement.style.setProperty('--difficulty-marker-size', newDifficultySize + 'px');
 }

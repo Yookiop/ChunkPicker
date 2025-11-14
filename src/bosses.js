@@ -133,8 +133,7 @@ function renderBossMarker(boss) {
     marker.className = "boss-marker";
     marker.src = bossTypes[boss.type].image;
     marker.title = bossTypes[boss.type].name;
-    marker.style.width = bossTypes[boss.type].size + "px";
-    marker.style.height = bossTypes[boss.type].size + "px";
+    // Size is now handled by CSS custom properties instead of inline styles
     
     // Position the marker in the top-right of the chunk
     marker.style.position = "absolute";
@@ -286,8 +285,7 @@ function renderDifficultyMarker(difficulty) {
     marker.className = "difficulty-marker";
     marker.src = difficultyTypes[difficulty.type].image;
     marker.title = difficultyTypes[difficulty.type].name;
-    marker.style.width = difficultyTypes[difficulty.type].size + "px";
-    marker.style.height = difficultyTypes[difficulty.type].size + "px";
+    // Size is now handled by CSS custom properties instead of inline styles
     
     // Position the marker in the bottom-right of the chunk
     marker.style.position = "absolute";

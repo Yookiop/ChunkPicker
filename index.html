@@ -36,7 +36,7 @@
 				<div class="controls" id="controls">
 					<h2 style="margin: 0px">OSRS Boss Chunker</h2>
 					<button class="picker" onclick="pickPotentialChunk()">Pick a random potential chunk!</button>
-					<button class="picker" onclick="centerOnUnlockedTiles()">Center on unlocked tiles</button>
+					<button class="picker" onclick="centerOnUnlockedTiles()">Center on unlocked chunks</button>
 				</div>
 				<div class="bossControls" id="bossControls">
 					<h2 style="margin: 0px">Boss Markers</h2>
@@ -52,38 +52,26 @@
 					<div id="bossInstructions" style="margin: 10px; line-height: 20px; color: #ff6b6b; display: none;">
 						Click on a chunk to place boss marker
 					</div>
-					<button class="picker" onclick="clearAllBossData()" style="background-color: #ff6b6b; margin-top: 10px;">Clear All Boss Markers</button>
+					<button class="picker" onclick="confirmClearAllBossData()" style="background-color: #ff6b6b; margin-top: 10px;">Clear All Boss Markers</button>
+				</div>
+				<div class="bossControls" id="difficultyControls">
+					<h2 style="margin: 0px">Difficulty Markers</h2>
+					<button class="picker" id="difficultyToggleButton" onclick="toggleDifficultyMode()">Difficulty Placement Mode</button>
+					<div style="margin: 10px;">
+						<label for="difficultyTypeSelect">Difficulty Type:</label>
+						<select id="difficultyTypeSelect" onchange="setSelectedDifficultyType(this.value)" style="width: 100%; margin-top: 5px; padding: 5px;">
+							<option value="insane">Insane</option>
+							<option value="death">Death</option>
+						</select>
+					</div>
+					<div id="difficultyInstructions" style="margin: 10px; line-height: 20px; color: #ff6b6b; display: none;">
+						Click on a chunk to place difficulty marker
+					</div>
+					<button class="picker" onclick="confirmClearAllDifficultyData()" style="background-color: #ff6b6b; margin-top: 10px;">Clear All Difficulty Markers</button>
 				</div>
 			</div>
 			<div class="arrowLeftBackground" id="arrowLeftBackground">
 				<div class="arrowLeft" id="arrowLeft" onclick="toggleSidebar(this.id, 'sidebarLeft')">			
-				</div>
-			</div>
-	
-			<div class="sidebarRight" id="sidebarRight">
-				<div class="updateBox" id="updateBox">
-					<h2 style="margin: 0px">New Website</h2>
-					<p style="margin: 0px 0px 20px 0px; line-height: 20px">Made by: Source Chunk</p>
-					<a href="https://source-chunk.github.io/chunk-picker-v2/" title="New Picker" style="margin: 0px 0px 20px 0px; line-height: 10px">Chunk Picker V2</a>
-				</div>
-				<div class="aboutBox" id="aboutBox">
-					<h2 style="margin: 0px">About</h2>
-					<p style="margin: 0px 0px 20px 0px; line-height: 20px">OSRS Boss Chunker - Modified by Yookiop</p>
-					<p style="margin: 0px 0px 20px 0px; line-height: 20px">Original by: Amehzyn</p>
-					<a href="https://discord.gg/8vQu9xU" title="Pookaguy's ChunkManMode Discord">
-						<img src="images/Discord-Logo-Color.png" style="width:25%"></a>
-					<a href="https://github.com/GitGeddes/ChunkPicker" title="Source Code">
-						<img src="images/GitHub-Mark-64px.png" style="width:25%">
-					</a>
-					<p style="margin: 0px; line-height: 20px">Contact me through Discord @Amehzyn
-					</br> Please send me suggestions to improve the site!
-					</p>
-					<p style="margin: 20px 0px 10px 0px; line-height: 20px">The Old School RuneScape game and world map are copyright © Jagex Games Ltd.</p>
-					<p style="margin: 10px; line-height: 20px">This website is not affiliated with Jagex Games Ltd.</p>
-				</div>
-			</div>
-			<div class="arrowRightBackground" id="arrowRightBackground">
-				<div class="arrowRight" id="arrowRight" onclick="toggleSidebar(this.id, 'sidebarRight')">			
 				</div>
 			</div>
 		</div>

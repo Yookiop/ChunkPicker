@@ -25,6 +25,11 @@ $(document).ready(function() {
 	if (typeof renderAllBossMarkers === 'function') {
 		setTimeout(renderAllBossMarkers, 100); // Small delay to ensure chunks are rendered first
 	}
+	
+	// Render any difficulty markers that were loaded
+	if (typeof renderAllDifficultyMarkers === 'function') {
+		setTimeout(renderAllDifficultyMarkers, 100); // Small delay to ensure chunks are rendered first
+	}
 
 	// Allow dragging the map, and set a flag when dragging
 	$("#imgDiv").draggable({
@@ -143,7 +148,6 @@ function fixMapEdges(imageDiv) {
 function calculateViewPortMargins() {
 	// Format: [top, right, bottom, left]
 	var margins = [50, 50, 50, 50];
-	margins[1] += document.getElementById("sidebarRight").offsetWidth;
 	margins[3] += document.getElementById("sidebarLeft").offsetWidth;
 	return margins; 
 }
@@ -152,7 +156,6 @@ function calculateViewPortMargins() {
 function calculateViewPortWidth() {
 	// Start with webpage window width and subtract from it
 	var width = window.innerWidth -
-		document.getElementById("sidebarRight").offsetWidth -
 		document.getElementById("sidebarLeft").offsetWidth;
 	return width;
 }

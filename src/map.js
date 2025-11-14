@@ -31,6 +31,12 @@ function toggleChunkButton(id) {
 			return; // Boss placement handled the click
 		}
 		
+		// Check if we're in difficulty mode
+		if (typeof addDifficultyMarker === 'function' && difficultyMode) {
+			addDifficultyMarker(id);
+			return; // Difficulty placement handled the click
+		}
+		
 		var btn = document.getElementById(id);
 		if (btn.className == "locked") {
 			addChunkAsPotential(id);
